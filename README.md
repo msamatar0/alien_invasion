@@ -1,1 +1,2 @@
-# Space Invaders-like shooter
+# Alien Invasion:
+A space-invaders-like shooter. Pygame project.
