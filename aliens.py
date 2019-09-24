@@ -7,16 +7,16 @@ config = Settings()
 
 def run_game():
   pygame.init()
-  screen = pygame.display.set_mode((config.screen_width, config.screen_height))
+  screen = pygame.display.set_mode\
+    ((config.screen_width, config.screen_height))
   pygame.display.set_caption("Alien Invasion!")
 
+  ship = Ship(screen)
+  
+
   while True:
-
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        sys.exit()
-
-    screen.fill(config.bg_color)
-    pygame.display.flip()
+    check_events(ship)
+    ship.update()
+    update_screen(config, screen, ship)
 
 run_game()
