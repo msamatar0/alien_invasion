@@ -54,3 +54,4 @@ def update_screen(config, screen, ship):
   screen.fill(config.bg_color)
   ship.blitme()
   pygame.display.flip()
+  
