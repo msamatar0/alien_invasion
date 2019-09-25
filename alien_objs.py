@@ -9,6 +9,7 @@ class Settings():
     self.screen_height = 600
     self.bg_color = (230, 230, 230)
     self.speed = .7
+    self.bullet_limit = 4
     self.bullet_speed = 1
     self.bullet_width = 3
     self.bullet_height = 8
@@ -39,7 +40,7 @@ class Ship():
     self.screen.blit(self.image, self.rect)
 
 class Bullet(Sprite):
-  def __init__(self, screen, config, ship):
+  def __init__(self, config, screen, ship):
     super().__init__()
     self.screen = screen
     self.rect = pygame.Rect\
@@ -55,7 +56,22 @@ class Bullet(Sprite):
     self.rect.y = self.y
 
   def draw(self):
-    pygame.draw.rect(screen, color, rect)
+    pygame.draw.rect(self.screen, self.color, self.rect)
+
+
+class Alien(Sprite):
+  def __init__(self, config, screen):
+    super().__init__()
+    self.screen = screen
+    self.config = config
+    self.image = pygame.image.load('alien.bmp')
+    self.rect = self.image.get_rect()
+    self.rect.x = self.rect.width
+    self.rect.y = self.rect.height
+    self.x = float(self.rect.x)
+
+  def blitme(self):
+    self.screen.blit(self.image, self.rect)
 
 #Game Functions
 
@@ -70,13 +86,14 @@ def check_events(config, screen, ship, bullets):
         check_keyup(config, screen, event, ship, bullets)
   
 def check_keydown(config, screen, event, ship, bullets):
-  if event.key == pygame.K_RIGHT:
+  if event.key == pygame.K_q:
+    sys.exit()
+  elif event.key == pygame.K_RIGHT:
     ship.right = True
   elif event.key == pygame.K_LEFT:
     ship.left = True
   elif event.key == pygame.K_z:
-    new_bullet = Bullet(config, screen, ship)
-    bullets.add(new_bullet)
+    fire(config, screen, ship, bullets)
 
 def check_keyup(config, screen, event, ship, bullets):
   if event.key == pygame.K_RIGHT:
@@ -90,3 +107,15 @@ def update_screen(config, screen, ship, bullets):
   for bullet in bullets:
     bullet.draw()
   pygame.display.flip()
+
+def update_bullets(bullets):
+  bullets.update()
+
+  for bullet in bullets.copy():
+    if bullet.rect.bottom <= 0:
+      bullets.remove(bullet)
+
+def fire(config, screen, ship, bullets):
+  if len(bullets) < config.bullet_limit:
+    new_bullet = Bullet(config, screen, ship)
+    bullets.add(new_bullet)
